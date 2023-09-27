@@ -45,6 +45,7 @@ mod proto {
             Address::DomainAddress(..) => ADDR_FQDN,
             Address::SocketAddress(SocketAddr::V4(..)) => ADDR_IPV4,
             Address::SocketAddress(SocketAddr::V6(..)) => ADDR_IPV6,
+            &tuic::Address::None => None,
         }
     }
 
