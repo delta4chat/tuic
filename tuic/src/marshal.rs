@@ -39,7 +39,7 @@ impl Header {
 }
 
 impl Address {
-    fn write(&self, buf: &mut impl BufMut) {
+    pub fn write(&self, buf: &mut impl BufMut) {
         buf.put_u8(self.type_code());
 
         match self {
