@@ -2,7 +2,7 @@ use std::io::{Error, Result, ErrorKind};
 use std::net::SocketAddr;
 use tokio::net::TcpStream;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tuic_protocol::Address;
+use tuic::Address;
 
 mod config {
     use super::*;

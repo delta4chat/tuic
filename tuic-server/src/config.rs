@@ -119,7 +119,7 @@ impl Config {
             return Err(ConfigError::NoConfig);
         }
 
-        socks5_out::set_server("127.0.0.1:1080");
+        socks5_out::set_server("127.0.0.1:1080".parse().unwrap());
         let file = File::open(path.unwrap())?;
         Ok(serde_json::from_reader(file)?)
     }
