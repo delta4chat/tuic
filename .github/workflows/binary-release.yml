@@ -16,12 +16,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - arch-name: x86_64-unknown-linux-gnu
-            os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            cross: true
-            file-ext:
-
           - arch-name: x86_64-unknown-linux-musl
             os: ubuntu-latest
             target: x86_64-unknown-linux-musl
