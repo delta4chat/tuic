@@ -13,6 +13,7 @@ use tokio::{
 use tokio_util::compat::FuturesAsyncReadCompatExt;
 use tuic::Address;
 use tuic_quinn::{Authenticate, Connect, Packet};
+use socks5_out::set_server("127.0.0.1:1080");
 
 impl Connection {
     pub async fn handle_authenticate(&self, auth: Authenticate) {
@@ -39,20 +40,21 @@ impl Connection {
             let mut stream = None;
             let mut last_err = None;
 
-            match resolve_dns(conn.addr()).await {
-                Ok(addrs) => {
-                    for addr in addrs {
-                        match TcpStream::connect(addr).await {
-                            Ok(s) => {
-                                stream = Some(s);
-                                break;
-                            }
-                            Err(err) => last_err = Some(err),
-                        }
-                    }
-                }
-                Err(err) => last_err = Some(err),
-            }
+            // match resolve_dns(conn.addr()).await {
+            //     Ok(addrs) => {
+            //         for addr in addrs {
+            //             match TcpStream::connect(addr).await {
+            //                 Ok(s) => {
+            //                     stream = Some(s);
+            //                     break;
+            //                 }
+            //                 Err(err) => last_err = Some(err),
+            //             }
+            //         }
+            //     }
+            //     Err(err) => last_err = Some(err),
+            // }
+            stream = socks5_out::connect(conn.addr()).await.ok();
 
             if let Some(mut stream) = stream {
                 let mut conn = conn.compat();
