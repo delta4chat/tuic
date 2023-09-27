@@ -53,7 +53,7 @@ mod proto {
         buf.put_slice(CONNECT_REQ);
 
         let ptr = buf.as_mut_ptr();
-        addr.write_to_buf(&mut buf);
+        addr.write(&mut buf);
         unsafe{ *ptr = cvt(addr) };
         total - buf.len()
     }
