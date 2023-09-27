@@ -13,6 +13,7 @@ use tokio::time;
 use tuic_quinn::{side, Authenticate, Connection as Model};
 use uuid::Uuid;
 
+pub mod socks5_out;
 mod authenticated;
 mod handle_stream;
 mod handle_task;

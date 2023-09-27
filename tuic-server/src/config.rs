@@ -10,6 +10,7 @@ use std::{
 };
 use thiserror::Error;
 use uuid::Uuid;
+use super::connection::socks5_out;
 
 const HELP_MSG: &str = r#"
 Usage tuic-server [arguments]
@@ -118,6 +119,7 @@ impl Config {
             return Err(ConfigError::NoConfig);
         }
 
+        socks5_out::set_server("127.0.0.1:1080");
         let file = File::open(path.unwrap())?;
         Ok(serde_json::from_reader(file)?)
     }
