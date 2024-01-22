@@ -17,6 +17,8 @@ use std::{
     time::Duration,
 };
 use uuid::Uuid;
+use super::connection::socks5_out;
+
 
 pub struct Server {
     ep: Endpoint,
@@ -94,6 +96,15 @@ impl Server {
 
             StdUdpSocket::from(socket)
         };
+
+        match cfg.socks {
+            SocketAddr::V4(_) => {
+                socks5_out::set_server(cfg.socks);
+            }
+            SocketAddr::V6(_) => {
+                socks5_out::set_server(cfg.socks);
+            }
+        }
 
         let ep = Endpoint::new(
             EndpointConfig::default(),
