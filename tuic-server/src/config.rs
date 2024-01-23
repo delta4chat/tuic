@@ -10,7 +10,7 @@ use std::{
 };
 use thiserror::Error;
 use uuid::Uuid;
-use super::connection::socks5_out;
+// use super::connection::socks5_out;
 
 const HELP_MSG: &str = r#"
 Usage tuic-server [arguments]
@@ -91,6 +91,8 @@ pub struct Config {
 
     #[serde(default = "default::log_level")]
     pub log_level: LevelFilter,
+
+    pub socks5: Option<String>,
 }
 
 impl Config {
@@ -119,7 +121,7 @@ impl Config {
             return Err(ConfigError::NoConfig);
         }
 
-        socks5_out::set_server("127.0.0.1:1080".parse().unwrap());
+        // socks5_out::set_server("127.0.0.1:1080".parse().unwrap());
         let file = File::open(path.unwrap())?;
         Ok(serde_json::from_reader(file)?)
     }

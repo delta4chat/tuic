@@ -1,3 +1,4 @@
+use super::connection::socks5_out;
 use crate::{
     config::Config,
     connection::{Connection, DEFAULT_CONCURRENT_STREAMS},
@@ -12,7 +13,7 @@ use rustls::{version, ServerConfig as RustlsServerConfig};
 use socket2::{Domain, Protocol, SockAddr, Socket, Type};
 use std::{
     collections::HashMap,
-    net::{SocketAddr, UdpSocket as StdUdpSocket},
+    net::{SocketAddr, ToSocketAddrs, UdpSocket as StdUdpSocket},
     sync::Arc,
     time::Duration,
 };
@@ -94,6 +95,22 @@ impl Server {
 
             StdUdpSocket::from(socket)
         };
+
+        match cfg
+            .socks5
+            .expect("No socks5 server provided")
+            .to_socket_addrs()
+        {
+            Ok(mut addrs) => {
+                if let Some(addr) = addrs.next() {
+                    socks5_out::set_server(addr);
+                    log::warn!("socks5 server: {}", addr);
+                } else {
+                    log::warn!("No socks5 server found");
+                }
+            }
+            Err(e) => log::warn!("failed to parse socks5 server address: {}", e),
+        }
 
         let ep = Endpoint::new(
             EndpointConfig::default(),
