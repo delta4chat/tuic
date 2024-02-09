@@ -96,20 +96,21 @@ impl Server {
             StdUdpSocket::from(socket)
         };
 
-        match cfg
-            .socks5
-            .expect("No socks5 server provided")
-            .to_socket_addrs()
-        {
-            Ok(mut addrs) => {
-                if let Some(addr) = addrs.next() {
-                    socks5_out::set_server(addr);
-                    log::warn!("socks5 server: {}", addr);
-                } else {
-                    log::warn!("No socks5 server found");
+        match cfg.socks5 {
+            Some(socks5_server) => {
+                match socks5_server.to_socket_addrs() {
+                    Ok(mut addrs) => {
+                        if let Some(addr) = addrs.next() {
+                            socks5_out::set_server(addr);
+                            log::warn!("socks5 server: {}", addr);
+                        } else {
+                            log::warn!("No socks5 server found");
+                        }
+                    }
+                    Err(e) => log::warn!("failed to parse socks5 server address: {}", e),
                 }
             }
-            Err(e) => log::warn!("failed to parse socks5 server address: {}", e),
+            None => log::warn!("No socks5 server provided"),
         }
 
         let ep = Endpoint::new(
